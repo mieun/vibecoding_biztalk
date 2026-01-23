@@ -27,14 +27,15 @@ def convert():
         
     text = data['text']
     target = data['target']
+    lang = data.get('lang', 'ko') # Default to Korean if not provided
     
     # Validation
     if len(text) > 500:
         return jsonify({"error": "Text exceeds 500 characters limit"}), 400
         
     try:
-        result = convert_text(text, target)
-        return jsonify({"original": text, "converted": result, "target": target})
+        result = convert_text(text, target, lang)
+        return jsonify({"original": text, "converted": result, "target": target, "lang": lang})
     except Exception as e:
         # In production, log the error securely
         print(f"Error during conversion: {str(e)}")

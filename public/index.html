@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ko">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>BizTone Converter - 업무 말투 변환기</title>
-    <meta name="description" content="누구나 쉽고 빠르게 자신의 생각을 전문적인 비즈니스 언어로 변환하세요.">
+    <title>BizTone Converter - Business Tone Transformation</title>
+    <meta name="description" content="Quickly and easily convert your thoughts into professional business language.">
     
     <!-- Fonts -->
     <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
@@ -12,96 +12,100 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
 
-    <!-- CSS -->
-    <link rel="stylesheet" href="css/style.css">
+    <!-- Tailwind CSS (Play CDN) -->
+    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <style type="text/tailwindcss">
+        @theme {
+            --font-display: 'Pretendard', 'Noto Sans KR', sans-serif;
+            --color-primary: #4A90E2;
+            --color-primary-dark: #357ABD;
+        }
+        body {
+            font-family: var(--font-display);
+        }
+        .scrollbar-hide::-webkit-scrollbar {
+            display: none;
+        }
+    </style>
 </head>
-<body>
-    <div class="app-container">
-        <header class="main-header">
-            <h1>BizTone Converter</h1>
-            <p class="subtitle">나의 생각을 완벽한 비즈니스 언어로 변환하세요</p>
+<body class="bg-[#F5F7FA] text-[#333333] leading-relaxed m-0">
+    <div class="max-w-[1200px] mx-auto p-4 md:p-8 min-h-screen flex flex-col relative">
+        <!-- Language Toggle -->
+        <div class="absolute top-4 right-4 md:top-8 md:right-8">
+            <button id="lang-toggle" class="px-3 py-1.5 bg-white border border-[#E0E6ED] rounded-lg text-sm font-medium text-[#666666] hover:text-[#4A90E2] hover:border-[#4A90E2] transition-colors cursor-pointer">
+                한글
+            </button>
+        </div>
+
+        <header class="text-center mb-8 md:mb-12 mt-8 md:mt-0">
+            <h1 class="text-[#4A90E2] text-2xl md:text-3xl font-bold mb-2">BizTone Converter</h1>
+            <p class="text-[#666666] text-sm md:text-base" data-i18n="subtitle">Transform your thoughts into perfect business language</p>
         </header>
 
-        <main class="converter-container">
-            <!-- Left Panel: Input -->
-            <section class="panel input-panel">
-                <div class="panel-header">
-                    <h2>원문 입력</h2>
-                    <span class="char-count" id="char-count">0/500</span>
+        <main class="flex flex-col gap-6 md:gap-8 flex-1 items-stretch max-w-4xl mx-auto w-full min-w-0">
+            <!-- Top Panel: Input -->
+            <section class="bg-white rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.05)] p-4 md:p-6 flex flex-col min-h-[250px] md:min-h-[300px] w-full min-w-0">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold m-0" data-i18n="inputTitle">Input Text</h2>
+                    <span class="text-sm text-[#666666]" id="char-count">0/500</span>
                 </div>
-                <div class="input-wrapper">
-                    <textarea id="source-text" placeholder="변환하고 싶은 내용을 자유롭게 작성해주세요.&#13;&#10;(예: 이번 프로젝트 일정 좀 미뤄야 할 것 같아요. 너무 바빠서요.)" maxlength="500"></textarea>
+                <div class="flex-1 flex flex-col min-w-0">
+                    <textarea id="source-text" class="block w-full flex-1 border border-[#E0E6ED] rounded-lg p-4 text-base resize-none outline-none transition-colors focus:border-[#4A90E2] min-w-0" data-i18n-placeholder="placeholder" placeholder="Feel free to write what you want to say.&#13;&#10;(e.g., I think we need to delay the project schedule. I'm too busy.)" maxlength="500"></textarea>
                 </div>
             </section>
 
-            <!-- Middle/Top Controls: Options -->
-            <section class="controls-panel">
-                <div class="target-selector">
-                    <h3>받는 사람</h3>
-                    <div class="radio-group">
-                        <label class="radio-option">
-                            <input type="radio" name="target" value="boss" checked>
-                            <span class="option-card">
-                                <span class="icon">👔</span>
-                                <span class="label">상사</span>
-                                <span class="desc">보고/격식</span>
-                            </span>
-                        </label>
-                        <label class="radio-option">
-                            <input type="radio" name="target" value="colleague">
-                            <span class="option-card">
-                                <span class="icon">🤝</span>
-                                <span class="label">동료</span>
-                                <span class="desc">협업/요청</span>
-                            </span>
-                        </label>
-                        <label class="radio-option">
-                            <input type="radio" name="target" value="customer">
-                            <span class="option-card">
-                                <span class="icon">🌟</span>
-                                <span class="label">고객</span>
-                                <span class="desc">응대/정중</span>
-                            </span>
-                        </label>
+            <!-- Middle Controls: Options -->
+            <section class="bg-white p-4 md:p-6 rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.05)] w-full min-w-0">
+                <div class="flex flex-col sm:flex-row items-end gap-3 w-full">
+                    <div class="flex-1 w-full sm:w-auto">
+                        <label for="target-select" class="block text-base mb-2 text-[#666666] font-medium" data-i18n="targetLabel">Target Audience</label>
+                        <div class="relative">
+                            <select id="target-select" class="w-full appearance-none bg-white border border-[#E0E6ED] text-[#333333] text-base rounded-lg p-3 pr-10 focus:outline-none focus:border-[#4A90E2] transition-colors cursor-pointer h-[50px]">
+                                <option value="boss" data-i18n="optionBoss">👔 Boss (Report/Formal)</option>
+                                <option value="colleague" data-i18n="optionColleague">🤝 Colleague (Coop/Request)</option>
+                                <option value="customer" data-i18n="optionCustomer">🌟 Customer (Service/Polite)</option>
+                            </select>
+                            <div class="pointer-events-none absolute inset-y-0 right-0 flex items-center px-3 text-[#666666]">
+                                <svg class="fill-current h-4 w-4" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20"><path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/></svg>
+                            </div>
+                        </div>
                     </div>
+                    <button id="convert-btn" class="w-full sm:w-auto px-6 h-[50px] bg-[#4A90E2] text-white rounded-lg text-lg font-semibold cursor-pointer transition-colors hover:bg-[#357ABD] disabled:bg-[#ccc] disabled:cursor-not-allowed flex justify-center items-center gap-2 shadow-sm shrink-0 whitespace-nowrap">
+                        <span class="btn-text" data-i18n="convertBtn">Convert</span>
+                        <span class="spinner hidden w-5 h-5 border-4 border-white/30 border-t-white rounded-full animate-spin"></span>
+                    </button>
                 </div>
-                <button id="convert-btn" class="btn-primary">
-                    <span class="btn-text">변환하기</span>
-                    <span class="spinner hidden"></span>
-                </button>
             </section>
 
-            <!-- Right Panel: Output -->
-            <section class="panel output-panel">
-                <div class="panel-header">
-                    <h2>변환 결과</h2>
-                    <button id="copy-btn" class="btn-icon" aria-label="복사하기" disabled>
+            <!-- Bottom Panel: Output -->
+            <section class="bg-white rounded-lg shadow-[0_4px_12px_rgba(0,0,0,0.05)] p-4 md:p-6 flex flex-col min-h-[250px] md:min-h-[300px] w-full min-w-0">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold m-0" data-i18n="resultTitle">Result</h2>
+                    <button id="copy-btn" class="bg-transparent border border-[#E0E6ED] rounded px-2 py-1 flex items-center gap-1 cursor-pointer text-[#666666] text-sm transition-all hover:bg-gray-100 hover:text-[#4A90E2] disabled:opacity-50 disabled:cursor-default" aria-label="Copy to clipboard" disabled>
                         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
                             <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
                             <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
                         </svg>
-                        <span>복사</span>
+                        <span data-i18n="copyBtn">Copy</span>
                     </button>
                 </div>
-                <div class="output-wrapper">
-                    <div id="result-text" class="result-placeholder" contenteditable="false">
-                        변환된 텍스트가 여기에 표시됩니다.
-                    </div>
+                <div class="flex-1 flex flex-col min-w-0">
+                    <div id="result-text" class="w-full h-full min-h-[150px] p-4 bg-[#fafafa] rounded-lg text-[#666666] whitespace-pre-wrap overflow-y-auto break-words min-w-0" contenteditable="false" data-i18n="resultPlaceholder">Converted text will appear here.</div>
                 </div>
-                <div class="feedback-actions hidden" id="feedback-section">
-                    <button class="btn-small feedback-btn" data-type="good">👍 도움됨</button>
-                    <button class="btn-small feedback-btn" data-type="bad">👎 별로예요</button>
+                <div class="mt-4 flex justify-end gap-2 hidden" id="feedback-section">
+                    <button class="px-3 py-1.5 border border-[#E0E6ED] bg-white rounded text-sm text-[#666666] hover:bg-gray-50 feedback-btn" data-type="good" data-i18n="feedbackGood">👍 Helpful</button>
+                    <button class="px-3 py-1.5 border border-[#E0E6ED] bg-white rounded text-sm text-[#666666] hover:bg-gray-50 feedback-btn" data-type="bad" data-i18n="feedbackBad">👎 Not Helpful</button>
                 </div>
             </section>
         </main>
 
-        <footer class="main-footer">
+        <footer class="text-center mt-12 text-[#666666] text-sm">
             <p>&copy; 2026 BizTone Converter. All rights reserved.</p>
         </footer>
     </div>
 
     <!-- Toast Notification -->
-    <div id="toast" class="toast hidden"></div>
+    <div id="toast" class="fixed bottom-5 left-1/2 -translate-x-1/2 bg-black/80 text-white px-6 py-3 rounded-full text-sm z-50 hidden opacity-0 transition-opacity duration-300"></div>
 
     <!-- JS -->
     <script src="js/script.js"></script>
