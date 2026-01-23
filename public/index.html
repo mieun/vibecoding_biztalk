@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BizTone Converter - 업무 말투 변환기</title>
+    <meta name="description" content="누구나 쉽고 빠르게 자신의 생각을 전문적인 비즈니스 언어로 변환하세요.">
+    
+    <!-- Fonts -->
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;500;700&display=swap" rel="stylesheet">
+
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <div class="app-container">
+        <header class="main-header">
+            <h1>BizTone Converter</h1>
+            <p class="subtitle">나의 생각을 완벽한 비즈니스 언어로 변환하세요</p>
+        </header>
+
+        <main class="converter-container">
+            <!-- Left Panel: Input -->
+            <section class="panel input-panel">
+                <div class="panel-header">
+                    <h2>원문 입력</h2>
+                    <span class="char-count" id="char-count">0/500</span>
+                </div>
+                <div class="input-wrapper">
+                    <textarea id="source-text" placeholder="변환하고 싶은 내용을 자유롭게 작성해주세요.&#13;&#10;(예: 이번 프로젝트 일정 좀 미뤄야 할 것 같아요. 너무 바빠서요.)" maxlength="500"></textarea>
+                </div>
+            </section>
+
+            <!-- Middle/Top Controls: Options -->
+            <section class="controls-panel">
+                <div class="target-selector">
+                    <h3>받는 사람</h3>
+                    <div class="radio-group">
+                        <label class="radio-option">
+                            <input type="radio" name="target" value="boss" checked>
+                            <span class="option-card">
+                                <span class="icon">👔</span>
+                                <span class="label">상사</span>
+                                <span class="desc">보고/격식</span>
+                            </span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="target" value="colleague">
+                            <span class="option-card">
+                                <span class="icon">🤝</span>
+                                <span class="label">동료</span>
+                                <span class="desc">협업/요청</span>
+                            </span>
+                        </label>
+                        <label class="radio-option">
+                            <input type="radio" name="target" value="customer">
+                            <span class="option-card">
+                                <span class="icon">🌟</span>
+                                <span class="label">고객</span>
+                                <span class="desc">응대/정중</span>
+                            </span>
+                        </label>
+                    </div>
+                </div>
+                <button id="convert-btn" class="btn-primary">
+                    <span class="btn-text">변환하기</span>
+                    <span class="spinner hidden"></span>
+                </button>
+            </section>
+
+            <!-- Right Panel: Output -->
+            <section class="panel output-panel">
+                <div class="panel-header">
+                    <h2>변환 결과</h2>
+                    <button id="copy-btn" class="btn-icon" aria-label="복사하기" disabled>
+                        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="9" y="9" width="13" height="13" rx="2" ry="2"></rect>
+                            <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"></path>
+                        </svg>
+                        <span>복사</span>
+                    </button>
+                </div>
+                <div class="output-wrapper">
+                    <div id="result-text" class="result-placeholder" contenteditable="false">
+                        변환된 텍스트가 여기에 표시됩니다.
+                    </div>
+                </div>
+                <div class="feedback-actions hidden" id="feedback-section">
+                    <button class="btn-small feedback-btn" data-type="good">👍 도움됨</button>
+                    <button class="btn-small feedback-btn" data-type="bad">👎 별로예요</button>
+                </div>
+            </section>
+        </main>
+
+        <footer class="main-footer">
+            <p>&copy; 2026 BizTone Converter. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <!-- Toast Notification -->
+    <div id="toast" class="toast hidden"></div>
+
+    <!-- JS -->
+    <script src="js/script.js"></script>
+</body>
+</html>
