@@ -171,7 +171,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             if (response.ok) {
                 // Success
-                resultText.textContent = data.converted;
+                resultText.textContent = data.result;
                 
                 // Change to result style
                 resultText.classList.remove(...RESULT_PLACEHOLDER_CLASSES);
