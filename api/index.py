@@ -1,38 +1,37 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
+import sys
 
 app = Flask(__name__)
-CORS(app)
+CORS(app) # 프론트엔드와 통신을 위해 필수입니다.
 
-# --- [여기가 노션에서 참고한 변환 로직입니다] ---
 def convert_text(text):
-    """
-    비즈톡 텍스트를 파싱하여 원하는 형식으로 변환하는 함수
-    (노션 예제 로직을 바탕으로 구현)
-    """
     if not text:
         return ""
-    
-    # 예: 줄바꿈 처리나 비즈톡 특유의 형식을 변환하는 로직
-    # 교육에서 배운 구체적인 변환 규칙이 있다면 이 부분을 수정하세요.
-    lines = text.strip().split('\n')
-    processed_lines = [f" {line}" for line in lines]
-    return "\n".join(processed_lines)
-# ----------------------------------------------
+    # 여기에 실제 변환 로직이 들어갑니다.
+    # 일단은 작동 확인을 위해 간단한 말머리를 붙이도록 설정했습니다.
+    return f"[변환완료]\n{text}"
 
 @app.route('/api/convert', methods=['POST'])
 def convert():
     try:
-        data = request.json
+        # 1. JSON 데이터 가져오기
+        data = request.get_json()
+        if not data:
+            return jsonify({"error": "No JSON data provided"}), 400
+            
         input_text = data.get('text', '')
         
-        # 위에서 만든 함수를 직접 호출
+        # 2. 변환 함수 호출
         result = convert_text(input_text)
         
+        # 3. 결과 반환
         return jsonify({"result": result})
+        
     except Exception as e:
+        # 에러 발생 시 로그에 상세 내용을 찍고 500 에러 반환
+        print(f"Error: {str(e)}")
         return jsonify({"error": str(e)}), 500
 
-# Vercel이 실행할 서버 객체
-if __name__ == "__main__":
-    app.run(debug=True)
+# Vercel이 이 파일을 읽을 때 app 객체를 직접 찾을 수 있도록 합니다.
+# 파일 끝에 아무것도 추가하지 않아도 app 변수만 있으면 작동합니다.
