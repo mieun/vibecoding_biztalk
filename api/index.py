@@ -1,6 +1,6 @@
 from flask import Flask, request, jsonify, send_from_directory
 from flask_cors import CORS
-from services import convert_text
+from .services import convert_text
 import os
 
 # Set the static folder to the 'public' directory, which is one level up from 'api'
