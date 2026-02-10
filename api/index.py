@@ -7,7 +7,7 @@ app = Flask(__name__)
 CORS(app)
 
 # Gemini 설정 (Vercel 환경변수에서 키를 가져옴)
-genai.configure(api_key=os.environ.get("GEMINI_API_KEY"))
+genai.configure(api_key=os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY"))
 model = genai.GenerativeModel('gemini-1.5-flash')
 
 def convert_text(text, target, lang='ko'):
