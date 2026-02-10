@@ -6,30 +6,14 @@ from flask_cors import CORS
 app = Flask(__name__)
 CORS(app)
 
-# [수정된 부분] 환경 변수를 더 확실하게 가져오는 로직
-def get_api_key():
-    # 여러 이름의 후보군을 모두 뒤져서 하나라도 있으면 가져옵니다.
-    keys = ["GEMINI_API_KEY", "GOOGLE_API_KEY"]
-    for key_name in keys:
-        val = os.environ.get(key_name)
-        if val:
-            return val.strip()  # 혹시 모를 앞뒤 공백 제거
-    return None
+# 환경 변수에서 키 가져오기 (이름 상관없이 대응)
+api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
+genai.configure(api_key=api_key)
 
-api_key = get_api_key()
-
-if api_key:
-    genai.configure(api_key=api_key)
-else:
-    # 키가 없을 경우 서버 로그에 찍히도록 (Vercel Logs에서 확인 가능)
-    print("CRITICAL ERROR: No API Key found in Environment Variables!")
-
+# 모델 설정 (최신 안정 버전인 gemini-1.5-flash-latest 사용)
 model = genai.GenerativeModel('gemini-1.5-flash')
 
 def convert_text(text, target, lang='ko'):
-    if not api_key:
-        return "서버 설정 오류: API 키를 찾을 수 없습니다. Vercel 환경 변수를 확인하세요."
-
     prompts = {
         "Boss": "보고 형식의 격식 있고 간결한 비즈니스 어투",
         "Colleague": "동료에게 요청하는 예의 바르면서도 친근한 어투",
@@ -45,7 +29,15 @@ def convert_text(text, target, lang='ko'):
         system_instruction += " 응답은 반드시 한국어로만 작성하세요."
 
     try:
-        response = model.generate_content(f"{system_instruction}\n\n변환할 문장: {text}")
+        # 안전한 호출 방식 (API 버전에 따른 충돌 방지)
+        response = model.generate_content(
+            f"{system_instruction}\n\n변환할 문장: {text}",
+            generation_config=genai.types.GenerationConfig(
+                candidate_count=1,
+                max_output_tokens=1000,
+                temperature=0.7
+            )
+        )
         return response.text.strip()
     except Exception as e:
         return f"AI 서비스 응답 오류: {str(e)}"
