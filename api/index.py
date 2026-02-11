@@ -8,14 +8,15 @@ CORS(app)
 
 # 키 설정
 api_key = os.environ.get("GEMINI_API_KEY") or os.environ.get("GOOGLE_API_KEY")
-genai.configure(api_key=api_key)
+if api_key:
+    genai.configure(api_key=api_key)
 
-# [내일의 포인트] 모델 이름을 명확하게 지정합니다.
-model = genai.GenerativeModel('gemini-1.5-flash-latest')
+# [해결 포인트] 가장 호환성이 높은 모델명 'gemini-pro' 또는 'models/gemini-pro' 사용
+model = genai.GenerativeModel('gemini-pro')
 
 def convert_text(text, target, lang='ko'):
     if not api_key:
-        return "API 키 설정이 필요합니다."
+        return "API 키 설정이 필요합니다. Vercel 환경변수를 확인하세요."
 
     prompts = {
         "Boss": "격식 있는 비즈니스 보고 어투",
@@ -28,17 +29,22 @@ def convert_text(text, target, lang='ko'):
     system_instruction += "영어(English)로 응답하세요." if lang == 'en' else "한국어로 응답하세요."
 
     try:
-        # 가장 표준적인 호출 방식입니다.
+        # 안전한 호출
         response = model.generate_content(f"{system_instruction}\n\n입력문장: {text}")
         return response.text.strip()
     except Exception as e:
+        # 에러 메시지를 더 구체적으로 반환하여 디버깅 용이하게 함
         return f"AI 서비스 응답 오류: {str(e)}"
 
 @app.route('/api/convert', methods=['POST'])
 def convert():
     try:
         data = request.json
-        result = convert_text(data.get('text', ''), data.get('target', 'Colleague'), data.get('lang', 'ko'))
+        input_text = data.get('text', '')
+        target = data.get('target', 'Colleague')
+        lang = data.get('lang', 'ko')
+        
+        result = convert_text(input_text, target, lang)
         return jsonify({"result": result})
     except Exception as e:
         return jsonify({"error": str(e)}), 500
